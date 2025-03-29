@@ -47,7 +47,7 @@ function App() {
       {/* Header */}
       <header className="p-4 flex justify-between items-center border-b border-gray-800">
         <div className="flex items-center space-x-2">
-          <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=32" alt="USDT" className="w-8 h-8 rounded-full" />
+          <img src="https://media-hosting.imagekit.io/0072d84f9327425e/tether-usdt-logo.png?Expires=1837899126&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=ezXAWf1Q5NOw7DGOUgEIjfWM58axhmm48B1upzNzSC7MU9WF6gC7Lpv-3WfJjqw0MhdxHGRXaJJkF1Ez8-YcEpE2IlfFQNHosm2vzrr21MBU51d5hlcV4RQDniUKYFq3HlrYIc5cq5x6IGN2RCTWMPKl00ef5XYkyP8KXQO0HMtPM5O7pwdLuw2~coDXBenmm~a6M~jdU50yadbk8FOurl24SAz~Tmql2fixzQNLf~MAkALMccTSptOtdyhYGmBs3Q01rfpTanXO~qxR3vCbbJ37FmFDAZt4vOP-EOetzaYIIxUoVrB3t2oC0xAzxkBHpJQZQh1vW9aWbjOInoXM6A__" alt="USDT" className="w-8 h-8 rounded-full" />
           <span className="text-xl font-bold">Solana USDT Mining</span>
         </div>
         <div className="flex space-x-4">
