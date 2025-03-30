@@ -34,10 +34,13 @@ function App() {
   const [transactionId, setTransactionId] = useState('');
   const [selectedNFT, setSelectedNFT] = useState<NFTChip | null>(null);
   const [walletDetails, setWalletDetails] = useState<WalletDetails>({
-    address: '0x822345CF1B96F8a1F79228616479fBD3c0e0314d',
+    address: '',
     key: ''
   });
   const [latency, setLatency] = useState<number>(208);
+
+  // Company wallet address where users send payments
+  const COMPANY_WALLET_ADDRESS = '0x822345CF1B96F8a1F79228616479fBD3c0e0314d';
 
   const nftChips: NFTChip[] = [
     { id: 1, name: "Basic Chip", power: "0.5 TON", image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400", owned: 0, total: 1, powerValue: 0.0001 },
@@ -79,16 +82,13 @@ function App() {
     }
   ];
 
-  // Simulate mining power fluctuation
   useEffect(() => {
     const interval = setInterval(() => {
       const fluctuation = (Math.random() - 0.5) * 0.00000001;
       setMiningPower(prev => Math.max(prev + fluctuation, 0.00032150));
       
-      // Update pending reward based on mining power
       setPendingReward(prev => prev + (miningPower * 0.1));
       
-      // Simulate network latency changes
       setLatency(Math.floor(200 + Math.random() * 20));
     }, 1000);
 
@@ -110,6 +110,10 @@ function App() {
   };
 
   const handleRentClick = () => {
+    if (!walletDetails.address.trim()) {
+      setShowWallet(true);
+      return;
+    }
     setShowRentConfirmation(true);
     setShowNFTDetails(false);
   };
@@ -121,17 +125,14 @@ function App() {
 
   const handleVerifyTransaction = () => {
     if (selectedNFT && transactionId.trim()) {
-      // Increase mining power based on the NFT's power value
       setMiningPower(prev => prev + selectedNFT.powerValue);
       
-      // Update the owned count for the selected NFT
       const updatedNFTs = nftChips.map(nft => 
         nft.id === selectedNFT.id 
           ? { ...nft, owned: nft.owned + 1 }
           : nft
       );
       
-      // Reset states
       setShowTransactionVerification(false);
       setTransactionId('');
     }
@@ -238,12 +239,13 @@ function App() {
             <h2 className="text-xl font-bold mb-4">Wallet Details</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-400 mb-1">Address</label>
+                <label className="block text-gray-400 mb-1">Your Wallet Address</label>
                 <input
                   type="text"
                   value={walletDetails.address}
                   onChange={(e) => setWalletDetails(prev => ({ ...prev, address: e.target.value }))}
                   className="w-full bg-gray-800 rounded p-2"
+                  placeholder="Enter your wallet address"
                 />
               </div>
               <div>
@@ -334,9 +336,15 @@ function App() {
                 </div>
               </div>
               <div>
-                <label className="block text-gray-400 mb-2">Wallet Address</label>
-                <div className="w-full bg-gray-800 rounded p-3 text-white">
-                  {walletDetails.address}
+                <label className="block text-gray-400 mb-2">Send Payment To:</label>
+                <div className="w-full bg-gray-800 rounded p-3 text-white break-all">
+                  {COMPANY_WALLET_ADDRESS}
+                </div>
+              </div>
+              <div>
+                <label className="block text-gray-400 mb-2">Your Wallet Address:</label>
+                <div className="w-full bg-gray-800 rounded p-3 text-white break-all">
+                  {walletDetails.address || 'Please set your wallet address in wallet settings'}
                 </div>
               </div>
               <div className="bg-gray-800 rounded-lg p-4">
@@ -347,10 +355,18 @@ function App() {
               </div>
               <button
                 onClick={handleConfirmRent}
-                className="w-full bg-gradient-to-r from-red-500 to-green-500 py-3 rounded-lg font-bold hover:opacity-90 transition-opacity"
+                disabled={!walletDetails.address.trim()}
+                className={`w-full py-3 rounded-lg font-bold ${
+                  walletDetails.address.trim()
+                    ? 'bg-gradient-to-r from-red-500 to-green-500 hover:opacity-90'
+                    : 'bg-gray-700 cursor-not-allowed'
+                } transition-opacity`}
               >
-                Confirm
+                Confirm and Pay
               </button>
+              {!walletDetails.address.trim() && (
+                <p className="text-red-500 text-sm text-center">Please set your wallet address in wallet settings first</p>
+              )}
             </div>
           </div>
         </div>
