@@ -30,6 +30,8 @@ function App() {
   const [showWallet, setShowWallet] = useState(false);
   const [showNFTDetails, setShowNFTDetails] = useState(false);
   const [showRentConfirmation, setShowRentConfirmation] = useState(false);
+  const [showTransactionVerification, setShowTransactionVerification] = useState(false);
+  const [transactionId, setTransactionId] = useState('');
   const [selectedNFT, setSelectedNFT] = useState<NFTChip | null>(null);
   const [walletDetails, setWalletDetails] = useState<WalletDetails>({
     address: '0x822345CF1B96F8a1F79228616479fBD3c0e0314d',
@@ -113,7 +115,12 @@ function App() {
   };
 
   const handleConfirmRent = () => {
-    if (selectedNFT) {
+    setShowRentConfirmation(false);
+    setShowTransactionVerification(true);
+  };
+
+  const handleVerifyTransaction = () => {
+    if (selectedNFT && transactionId.trim()) {
       // Increase mining power based on the NFT's power value
       setMiningPower(prev => prev + selectedNFT.powerValue);
       
@@ -124,8 +131,9 @@ function App() {
           : nft
       );
       
-      // Close the confirmation modal
-      setShowRentConfirmation(false);
+      // Reset states
+      setShowTransactionVerification(false);
+      setTransactionId('');
     }
   };
 
@@ -341,7 +349,42 @@ function App() {
                 onClick={handleConfirmRent}
                 className="w-full bg-gradient-to-r from-red-500 to-green-500 py-3 rounded-lg font-bold hover:opacity-90 transition-opacity"
               >
-                Confirm and Pay
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Transaction Verification Modal */}
+      {showTransactionVerification && selectedNFT && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-gray-900 rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Verify Transaction</h2>
+              <button onClick={() => setShowTransactionVerification(false)} className="text-gray-400 hover:text-white">
+                ×
+              </button>
+            </div>
+            <div className="space-y-4">
+              <p className="text-gray-400">Please enter your transaction ID to complete the rental process:</p>
+              <input
+                type="text"
+                value={transactionId}
+                onChange={(e) => setTransactionId(e.target.value)}
+                placeholder="Enter transaction ID"
+                className="w-full bg-gray-800 rounded p-3 text-white"
+              />
+              <button
+                onClick={handleVerifyTransaction}
+                disabled={!transactionId.trim()}
+                className={`w-full py-3 rounded-lg font-bold ${
+                  transactionId.trim()
+                    ? 'bg-gradient-to-r from-red-500 to-green-500 hover:opacity-90'
+                    : 'bg-gray-700 cursor-not-allowed'
+                } transition-all`}
+              >
+                Verify Transaction
               </button>
             </div>
           </div>
